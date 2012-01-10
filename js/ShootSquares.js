@@ -6,10 +6,10 @@ ShootSquares.Main = new function() {
 	var stage;
 	var gametitle;
 	var gameinstructions;
-	var brick;
-	var bricks;
-	var numOfBricksX;
-	var numOfBricksY;
+	var square;
+	var squares;
+	var numOfSquaresX;
+	var numOfSquaresY;
 	var triangle;
 	var moveLeft;
 	var moveRight;
@@ -29,11 +29,11 @@ ShootSquares.Main = new function() {
 		//startMenu();
 		
 		//other game settings
-		numOfBricksX = 79;
-		numOfBricksY = 2;
+		numOfSquaresX = 79;
+		numOfSquaresY = 2;
 		moveLeft = false;
 		moveRight = false;
-		bricks = new Array();
+		squares = new Array();
 		bullets = new Array();
 		
 		$(window).resize(onResizeWindow);
@@ -85,18 +85,18 @@ ShootSquares.Main = new function() {
 		stage.addChild(triangle);
 		
 		//create bricks
-		for (var x = 0; x < numOfBricksX; x++) {
-			for (var y = 0; y < numOfBricksY; y++) {
-				brick = new Shape();
-				brick.graphics.beginFill('#F00');
-				brick.graphics.drawRect(-2.5, -2.5, 5, 5);
-				brick.graphics.endFill();
-				brick.x = (x * 7) + 2;
-				brick.y = (y * 7) + 2.5;
-				brick.isAnimated = false;
-				brick.name = 'brick: ' + x + ' : ' + y;
-				bricks.push(brick);
-				stage.addChild(brick);
+		for (var x = 0; x < numOfSquaresX; x++) {
+			for (var y = 0; y < numOfSquaresY; y++) {
+				square = new Shape();
+				square.graphics.beginFill('#F00');
+				square.graphics.drawRect(-2.5, -2.5, 5, 5);
+				square.graphics.endFill();
+				square.x = (x * 7) + 2;
+				square.y = (y * 7) + 2.5;
+				square.isAnimated = false;
+				square.name = 'brick: ' + x + ' : ' + y;
+				squares.push(square);
+				stage.addChild(square);
 			}
 		}
 		
@@ -179,22 +179,22 @@ ShootSquares.Main = new function() {
 		/* Collisions: bricks with Bullets */
 		if (bullets.length != 0) {
 			for (var bullet = 0; bullet < bullets.length; bullet++) {
-				for (var brick = 0; brick < bricks.length; brick++) {
+				for (var square = 0; square < squares.length; square++) {
 					var aBullet = bullets[bullet];
-					var aBrick = bricks[brick];
-					var dx = aBrick.x - aBullet.x;
-					var dy = aBrick.y - aBullet.y;
+					var aSquare = squares[square];
+					var dx = aSquare.x - aBullet.x;
+					var dy = aSquare.y - aBullet.y;
 					var distance = Math.sqrt(dx * dx + dy * dy);
 					
 					if (distance < 2.5 + 2.5) {
 						stage.removeChild(aBullet);
 						bullets.splice(bullet, 1);
 						
-						if (!aBrick.isAnimated) {
-							aBrick.isAnimated = true;
+						if (!aSquare.isAnimated) {
+							aSquare.isAnimated = true;
 						} else {
-							stage.removeChild(aBrick);
-							bricks.splice(brick, 1);
+							stage.removeChild(aSquare);
+							squares.splice(square, 1);
 						} 
 						
 						stage.update();
@@ -205,17 +205,17 @@ ShootSquares.Main = new function() {
 		}
 		
 		/* Collisions: bricks with triangle */
-		if (bricks.length != 0) {
-			for (var singleBrick = 0; singleBrick < bricks.length; singleBrick++) {
-				var theBrick = bricks[singleBrick];
-				var dx = theBrick.x - triangle.x;
-				var dy = theBrick.y - triangle.y;
+		if (squares.length != 0) {
+			for (var singleSquare = 0; singleSquare < squares.length; singleSquare++) {
+				var theSquare = squares[singleSquare];
+				var dx = theSquare.x - triangle.x;
+				var dy = theSquare.y - triangle.y;
 				var distance = Math.sqrt(dx * dx + dy * dy);
 				
 				if (distance < 2.5) {
 					//console.log('hit triangle');
-					stage.removeChild(theBrick);
-					bricks.splice(singleBrick, 1);
+					stage.removeChild(theSquare);
+					squares.splice(singleSquare, 1);
 					
 					stage.update();
 					return;
@@ -224,16 +224,16 @@ ShootSquares.Main = new function() {
 		}
 		
 		/* Animate those bricks that have been shot down */
-		if (bricks.length != 0) {
-			for (var animBrick = 0; animBrick < bricks.length; animBrick++) {
-				var animatedBrick = bricks[animBrick];
+		if (squares.length != 0) {
+			for (var animSquare = 0; animSquare < squares.length; animSquare++) {
+				var animatedSquare = squares[animSquare];
 				
-				if (animatedBrick.isAnimated) {
-					animatedBrick.y += 5;
+				if (animatedSquare.isAnimated) {
+					animatedSquare.y += 5;
 					
-					if (animatedBrick.y > canvas.height) {
-						stage.removeChild(animatedBrick);
-						bricks.splice(animBrick, 1);
+					if (animatedSquare.y > canvas.height) {
+						stage.removeChild(animatedSquare);
+						squares.splice(animSquare, 1);
 					}
 				}
 			}
