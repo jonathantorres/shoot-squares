@@ -15,6 +15,10 @@ ShootSquares.Main = new function() {
 	var moveRight;
 	var bullet;
 	var bullets;
+	var scoreText;
+	var lifeText;
+	var gameScore;
+	var playerLife;
 
 	this.init = function() {
 		canvas = document.getElementById('main');
@@ -35,6 +39,8 @@ ShootSquares.Main = new function() {
 		moveRight = false;
 		squares = new Array();
 		bullets = new Array();
+		gameScore = 0;
+		playerLife = 100;
 		
 		$(window).resize(onResizeWindow);
 		stage.tick = onStageTick;
@@ -73,6 +79,20 @@ ShootSquares.Main = new function() {
 	}
 	
 	function startGame() {
+		//create the score info
+		scoreText = new Text('Score: ' + gameScore + 'pts', '10px Arial', '#999');
+		scoreText.textAlign = 'left';
+		scoreText.x = 5;
+		scoreText.y = canvas.height - 5;
+		stage.addChild(scoreText);
+		
+		//create the life info
+		lifeText = new Text('Life: ' + playerLife + '%', '10px Arial', '#999');
+		lifeText.textAlign = 'left';
+		lifeText.x = canvas.width - 55;
+		lifeText.y = canvas.height - 5;
+		stage.addChild(lifeText);
+		
 		//create triangle
 		triangle = new Shape();
 		triangle.graphics.beginFill('#FFF');
@@ -84,7 +104,7 @@ ShootSquares.Main = new function() {
 		triangle.y = canvas.height - 50;
 		stage.addChild(triangle);
 		
-		//create bricks
+		//create squares
 		for (var x = 0; x < numOfSquaresX; x++) {
 			for (var y = 0; y < numOfSquaresY; y++) {
 				square = new Shape();
@@ -176,7 +196,7 @@ ShootSquares.Main = new function() {
 			}
 		}
 		
-		/* Collisions: bricks with Bullets */
+		/* Collisions: squares with Bullets */
 		if (bullets.length != 0) {
 			for (var bullet = 0; bullet < bullets.length; bullet++) {
 				for (var square = 0; square < squares.length; square++) {
@@ -195,6 +215,9 @@ ShootSquares.Main = new function() {
 						} else {
 							stage.removeChild(aSquare);
 							squares.splice(square, 1);
+							
+							gameScore += 5;
+							scoreText.text = 'Score: ' + gameScore + 'pts';
 						} 
 						
 						stage.update();
@@ -204,7 +227,7 @@ ShootSquares.Main = new function() {
 			}
 		}
 		
-		/* Collisions: bricks with triangle */
+		/* Collisions: squares with triangle */
 		if (squares.length != 0) {
 			for (var singleSquare = 0; singleSquare < squares.length; singleSquare++) {
 				var theSquare = squares[singleSquare];
@@ -217,13 +240,16 @@ ShootSquares.Main = new function() {
 					stage.removeChild(theSquare);
 					squares.splice(singleSquare, 1);
 					
+					playerLife -= 5;
+					lifeText.text = 'Life: ' + playerLife + '%';
+					
 					stage.update();
 					return;
 				}
 			}
 		}
 		
-		/* Animate those bricks that have been shot down */
+		/* Animate those squares that have been shot down */
 		if (squares.length != 0) {
 			for (var animSquare = 0; animSquare < squares.length; animSquare++) {
 				var animatedSquare = squares[animSquare];
