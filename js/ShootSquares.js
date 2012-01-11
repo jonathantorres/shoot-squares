@@ -102,6 +102,8 @@ ShootSquares.Main = new function() {
 		triangle.graphics.lineTo(0, 0);
 		triangle.x = canvas.width * 0.5;
 		triangle.y = canvas.height - 50;
+		triangle.width = 20;
+		triangle.height = 50;
 		stage.addChild(triangle);
 		
 		//create squares
@@ -113,6 +115,8 @@ ShootSquares.Main = new function() {
 				square.graphics.endFill();
 				square.x = (x * 7) + 2;
 				square.y = (y * 7) + 2.5;
+				square.width = 5;
+				square.height = 5;
 				square.isAnimated = false;
 				square.name = 'brick: ' + x + ' : ' + y;
 				squares.push(square);
@@ -227,24 +231,23 @@ ShootSquares.Main = new function() {
 			}
 		}
 		
-		/* Collisions: squares with triangle */
+		/* Collisions: squares with the triangle */
 		if (squares.length != 0) {
 			for (var singleSquare = 0; singleSquare < squares.length; singleSquare++) {
 				var theSquare = squares[singleSquare];
-				var dx = theSquare.x - triangle.x;
-				var dy = theSquare.y - triangle.y;
-				var distance = Math.sqrt(dx * dx + dy * dy);
 				
-				if (distance < 2.5) {
-					//console.log('hit triangle');
-					stage.removeChild(theSquare);
-					squares.splice(singleSquare, 1);
-					
-					playerLife -= 5;
-					lifeText.text = 'Life: ' + playerLife + '%';
-					
-					stage.update();
-					return;
+				if (theSquare.y - (theSquare.height * 0.5) > triangle.y) {
+					if (theSquare.x <= triangle.x + (triangle.width * 0.5) && theSquare.x >= triangle.x - (triangle.width * 0.5)) {
+						//console.log('hit triangle');
+						stage.removeChild(theSquare);
+						squares.splice(singleSquare, 1);
+						
+						playerLife -= 5;
+						lifeText.text = 'Life: ' + playerLife + '%';
+						
+						stage.update();
+						return;
+					}
 				}
 			}
 		}
