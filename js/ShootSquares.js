@@ -22,6 +22,7 @@ ShootSquares.Main = new function() {
 	var playerLife;
 	var gameOverText;
 	var restartGameText;
+	var finalScoreText;
 
 	this.init = function() {
 		canvas = document.getElementById('main');
@@ -179,8 +180,6 @@ ShootSquares.Main = new function() {
 	}
 	
 	function gameOver() {
-		gameState = 'menu';
-		
 		stage.removeChild(triangle, scoreText, lifeText);
 		
 		/* remove any remaining squares */
@@ -190,6 +189,16 @@ ShootSquares.Main = new function() {
 				squares.splice(i, 1);
 			}
 		}
+		
+		/* remove any remaining bullets */
+		if (bullets.length != 0) {
+			for (var j = bullets.length; j >= 0; j--) {
+				stage.removeChild(bullets[j]);
+				bullets.splice(j, 1);
+			}
+		}
+		
+		gameState = 'menu';
 		
 		//clean up objects and events
 		triangle = null;
@@ -203,14 +212,19 @@ ShootSquares.Main = new function() {
 		gameOverText = new Text('Game Over!','20px Arial', '#FFF');
 		gameOverText.textAlign = 'center';
 		gameOverText.x = canvas.width * 0.5;
-		gameOverText.y = canvas.height * 0.5;
+		gameOverText.y = canvas.height * 0.5 - 20;
+		
+		finalScoreText = new Text('Your score: ' + gameScore + 'pts', '14px Arial', '#FFF');
+		finalScoreText.textAlign = 'center';
+		finalScoreText.x = canvas.width * 0.5;
+		finalScoreText.y = canvas.height * 0.5 + 3;
 		
 		restartGameText = new Text('Press spacebar to restart the game', '10px Arial', '#999');
 		restartGameText.textAlign = 'center';
 		restartGameText.x = canvas.width * 0.5;
 		restartGameText.y = canvas.height * 0.5 + 20;
 		
-		stage.addChild(gameOverText, restartGameText);
+		stage.addChild(gameOverText, finalScoreText, restartGameText);
 		
 		$(document).bind('keyup.restart', restartGame);
 		
