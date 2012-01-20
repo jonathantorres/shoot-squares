@@ -233,8 +233,9 @@ ShootSquares.Main = new function() {
 	
 	function restartGame(e) {
 		if (e.keyCode == 32) {
-			stage.removeChild(gameOverText, restartGameText);
+			stage.removeChild(gameOverText, finalScoreText, restartGameText);
 			gameOverText = null;
+			finalScoreText = null;
 			restartGameText = null;
 			stage.update();
 			
