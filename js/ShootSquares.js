@@ -32,16 +32,13 @@ ShootSquares.Main = new function() {
 		stage.mouseEventsEnabled = true;
 		Ticker.useRAF = true;
 		Ticker.setFPS(30);
-		Ticker.addListener(stage);
+		Ticker.addListener(window);
 		
-		gameState = 'menu'
-		
-		$(window).resize(onResizeWindow);
-		stage.tick = onStageTick;
-		
+		gameState = 'menu';
 		startMenu();
 		
-		stage.update();
+		window.tick = onTick;
+		$(window).resize(onResizeWindow);
 	}
 	
 	function startMenu() {
@@ -54,12 +51,13 @@ ShootSquares.Main = new function() {
 		gameinstructions = new Text('Press spacebar to get started', '10px Arial', '#999');
 		gameinstructions.textAlign = 'center';
 		gameinstructions.x = canvas.width * 0.5;
-		gameinstructions.y =  canvas.height * 0.5 + 20;
+		gameinstructions.y = canvas.height * 0.5 + 20;
 		
-		stage.addChild(gametitle);
-		stage.addChild(gameinstructions);
+		stage.addChild(gametitle, gameinstructions);
 		
-		$(document).bind('keyup.starmenu', onDocumentKeyUp);
+		stage.update();
+		
+		$(document).bind('keyup.startmenu', onDocumentKeyUp);
 	}
 	
 	function onDocumentKeyUp(e) {
@@ -67,10 +65,9 @@ ShootSquares.Main = new function() {
 			stage.removeChild(gametitle, gameinstructions);
 			gametitle = null;
 			gameinstructions = null;
-			stage.update();
 			
 			startGame();
-			$(document).unbind('keyup.starmenu');
+			$(document).unbind('keyup.startmenu');
 		}
 	}
 	
@@ -162,8 +159,6 @@ ShootSquares.Main = new function() {
 			bullet.y = triangle.y;
 			bullets.push(bullet);
 			stage.addChild(bullet);
-			
-			stage.update();
 		}
 	}
 	
@@ -237,15 +232,15 @@ ShootSquares.Main = new function() {
 			gameOverText = null;
 			finalScoreText = null;
 			restartGameText = null;
-			stage.update();
 			
 			startGame();
 			$(document).unbind('keyup.restart', restartGame);
 		}
 	}
 	
-	function onStageTick(e) {
+	function onTick(e) {
 		if (gameState == 'play') {
+			
 			/* Life reaches 0% or squares are exploded, the game ends */
 			if (playerLife == 0 || squares.length == 0) {
 				gameOver();
@@ -348,9 +343,9 @@ ShootSquares.Main = new function() {
 					}
 				}
 			}
+			
+			stage.update();
 		}
-		
-		stage.update();
 	}
 	
 	function onResizeWindow(e) {
